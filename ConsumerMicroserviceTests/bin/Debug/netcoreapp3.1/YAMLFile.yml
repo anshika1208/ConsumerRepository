@@ -1,0 +1,35 @@
+﻿apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: consumermicroservice-deployment
+  labels:
+    app: ConsumerMicroservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ConsumerMicroservice
+  template:
+    metadata:
+      labels:
+        app: ConsumerMicroservice
+    spec:
+      containers:
+      - name: consumercontainerregistry
+        image: consumercontainerregistry.azurecr.io/consumerrepoproject:latest
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+      - name: webapisvcsecret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: consumermicroservicesvc
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: ConsumerMicroservice
